@@ -1,4 +1,4 @@
-name: Build EXE with Nuitka
+name: Build simple EXE with Nuitka (non-standalone)
 
 on:
   push:
@@ -22,23 +22,12 @@ jobs:
           pip install nuitka
           pip install wheel
 
-      - name: Compile with Nuitka
+      - name: Compile to .exe (non-standalone)
         run: |
-          nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=dist
+          nuitka index.py --windows-icon-from-ico=./favicon.ico
 
-      - name: Copiar ícono al ejecutable
-        run: |
-          copy favicon.ico dist/index.dist/
-
-
-      - name: Compress full folder into ZIP (with DLLs)
-        run: |
-          cd dist
-          powershell -Command "Compress-Archive -Path 'index.dist' -DestinationPath '../portable-app.zip'"
-
-      
-      - name: Upload ZIP as artifact
+      - name: Upload .exe
         uses: actions/upload-artifact@v4
         with:
-          name: portable-exe
-          path: portable-app.zip
+          name: compiled-exe
+          path: index.exe
