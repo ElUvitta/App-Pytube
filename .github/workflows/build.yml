@@ -1,4 +1,4 @@
-name: Build simple EXE with Nuitka (non-standalone)
+name: Nuitka Portable Build
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup Python
@@ -22,12 +22,20 @@ jobs:
           pip install nuitka
           pip install wheel
 
-      - name: Compile to .exe (non-standalone)
+      - name: Compile to portable EXE
         run: |
-          nuitka index.py --windows-icon-from-ico=./favicon.ico
+          nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=build
 
-      - name: Upload .exe
+      - name: Copy favicon to build folder (optional)
+        run: |
+          copy favicon.ico build/index.dist/
+
+      - name: Compress portable EXE and dependencies
+        run: |
+          powershell -Command "Compress-Archive -Path build/index.dist -DestinationPath portable-app.zip"
+
+      - name: Upload ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-exe
-          path: index.exe
+          name: portable-exe
+          path: portable-app.zip
