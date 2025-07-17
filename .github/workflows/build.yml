@@ -23,12 +23,7 @@ jobs:
           pip install wheel
 
       - name: Compile with Nuitka
-        run: |
-          nuitka index.py ^
-            --standalone ^
-            --enable-plugin=tk-inter ^
-            --windows-icon-from-ico=./favicon.ico ^
-            --output-dir=dist
+        run: nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=dist
 
       - name: Upload artifact (EXE)
         uses: actions/upload-artifact@v4
