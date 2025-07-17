@@ -26,9 +26,13 @@ jobs:
         run: |
           nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=dist
 
+      - name: Copiar ícono al ejecutable
+        run: |
+          copy favicon.ico dist/index.dist/
+
       - name: Compress full folder into ZIP
         run: |
-          powershell Compress-Archive -Path dist/index.dist/* -DestinationPath portable-app.zip
+          powershell Compress-Archive -Path dist/index.dist -DestinationPath portable-app.zip
 
       - name: Upload ZIP as artifact
         uses: actions/upload-artifact@v4
