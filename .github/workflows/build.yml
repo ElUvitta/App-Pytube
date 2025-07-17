@@ -23,11 +23,15 @@ jobs:
           pip install wheel
 
       - name: Compile with Nuitka
-        run: nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=dist
+        run: |
+          nuitka index.py --standalone --enable-plugin=tk-inter --windows-icon-from-ico=./favicon.ico --output-dir=dist
 
-      - name: Upload full folder (EXE + DLLs)
+      - name: Compress full folder into ZIP
+        run: |
+          powershell Compress-Archive -Path dist/index.dist/* -DestinationPath portable-app.zip
+
+      - name: Upload ZIP as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-app
-          path: dist/index.dist/**
-
+          name: portable-exe
+          path: portable-app.zip
