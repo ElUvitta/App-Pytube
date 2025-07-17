@@ -30,10 +30,13 @@ jobs:
         run: |
           copy favicon.ico dist/index.dist/
 
-      - name: Compress full folder into ZIP (including DLLs)
-        run: |
-          powershell -Command "Compress-Archive -Path (Get-ChildItem -Recurse -Path dist/index.dist) -DestinationPath portable-app.zip"
 
+      - name: Compress full folder into ZIP (with DLLs)
+        run: |
+          cd dist
+          powershell -Command "Compress-Archive -Path 'index.dist' -DestinationPath '../portable-app.zip'"
+
+      
       - name: Upload ZIP as artifact
         uses: actions/upload-artifact@v4
         with:
