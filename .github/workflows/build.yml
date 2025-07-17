@@ -1,0 +1,37 @@
+name: Build EXE with Nuitka
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Nuitka
+        run: |
+          pip install nuitka
+          pip install wheel
+
+      - name: Compile with Nuitka
+        run: |
+          nuitka index.py ^
+            --standalone ^
+            --enable-plugin=tk-inter ^
+            --windows-icon-from-ico=./favicon.ico ^
+            --output-dir=dist
+
+      - name: Upload artifact (EXE)
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-exe
+          path: dist/index.dist/
